@@ -1,0 +1,2 @@
+# Architecture
+- Document Generator uses original PDF page rasters and one shared coordinate map for Urdu inputs; the same rendered pages feed previews, PDFs and isolated iframe printing to prevent export/layout divergence.

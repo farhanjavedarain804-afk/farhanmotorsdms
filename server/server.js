@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.SERVER_PORT || process.env.PORT || 5000;
+const PORT = process.env.PORT || process.env.SERVER_PORT || 5000;
 
 // Setup uploads folder
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
@@ -234,18 +234,24 @@ if (fs.existsSync(DIST_DIR)) {
       res.sendFile(path.join(DIST_DIR, 'index.html'));
     }
   });
-}
-
-// Start Server
-async function start() {
-  await initDatabase();
-  app.listen(PORT, () => {
-    console.log(`=======================================================`);
-    console.log(`🚗 Farhan Motors Backend API running on port ${PORT}`);
-    console.log(`📡 URL: http://localhost:${PORT}`);
-    console.log(`📊 DB Mode: ${db.isMySQL() ? 'MySQL Server' : 'Local Storage Mode'}`);
-    console.log(`=======================================================`);
+} else {
+  app.get('/', (_req, res) => {
+    res.send('<h2>Farhan Motors Server Active</h2><p>Building frontend assets...</p>');
   });
 }
 
-start();
+// Start Server immediately so Hostinger proxy binds without 503 timeout
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`=======================================================`);
+  console.log(`🚗 Farhan Motors Server listening on 0.0.0.0:${PORT}`);
+  console.log(`📡 URL: http://localhost:${PORT}`);
+  console.log(`=======================================================`);
+  
+  // Initialize Database asynchronously in background
+  initDatabase().then(() => {
+    console.log(`📊 DB Mode: ${db.isMySQL() ? 'MySQL Server (Connected)' : 'Local Storage Mode'}`);
+  }).catch((err) => {
+    console.warn(`[DB Warning]:`, err.message);
+  });
+});
+

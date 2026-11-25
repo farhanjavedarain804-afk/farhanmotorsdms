@@ -1,10 +1,8 @@
 -- ==============================================================
 -- Farhan Motors & Rent A Car (Private) Limited
 -- Complete MySQL Database Schema & Initial Data Migration
+-- Target Database: u168718068_farhanmotors
 -- ==============================================================
-
-CREATE DATABASE IF NOT EXISTS `farhan_motors` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `farhan_motors`;
 
 -- -------------------------------------------------------------
 -- 1. USERS & AUTHENTICATION

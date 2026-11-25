@@ -115,20 +115,13 @@ export async function initDatabase() {
   };
 
   try {
-    // Attempt initial connection to MySQL server
-    const initConn = await mysql.createConnection({
-      host: config.host,
-      port: config.port,
-      user: config.user,
-      password: config.password,
-    });
-
-    console.log(`[MySQL] Connected to MySQL Server at ${config.host}:${config.port}`);
-    await initConn.query(`CREATE DATABASE IF NOT EXISTS \`${config.database}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
-    await initConn.end();
-
-    // Create pool for farhan_motors database
+    // Create pool for configured database
     pool = mysql.createPool(config);
+
+    // Verify connection
+    const conn = await pool.getConnection();
+    console.log(`[MySQL] Successfully connected to Database '${config.database}' at ${config.host}:${config.port}`);
+    conn.release();
 
     // Run schema initialization from SQL file if tables don't exist
     const [rows] = await pool.query('SHOW TABLES');
